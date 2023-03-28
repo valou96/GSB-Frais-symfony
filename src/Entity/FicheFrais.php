@@ -32,7 +32,7 @@ class FicheFrais
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\ManyToOne(inversedBy: 'fichefrais')]
+    #[ORM\ManyToOne(inversedBy: 'fichefrais', fetch: 'EAGER')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Etat $etat = null;
 
@@ -41,6 +41,7 @@ class FicheFrais
 
     #[ORM\OneToMany(mappedBy: 'ficheFrais', targetEntity: LigneFraisForfait::class, orphanRemoval: true)]
     private Collection $ligneFraisForfait;
+
 
 
     public function __construct()
@@ -197,4 +198,21 @@ class FicheFrais
 
         return $this;
     }
+
+    /**
+     * @return float
+     */
+    public function getMontantLigneFrais(){
+        $toto = $this->getLigneFraisForfait();
+        $tata = $this->getLigneHorsForfait();
+        $total = 0;
+        foreach ($toto as $uneligneFraisForfait){
+            $total += $uneligneFraisForfait->getQuantite() * $uneligneFraisForfait->getFraisForfait()->getMontant();
+        }
+        foreach ($tata as $fraisHorsForfait){
+            $total += $fraisHorsForfait->getMontant();
+        }
+        return $total;
+    }
+
 }

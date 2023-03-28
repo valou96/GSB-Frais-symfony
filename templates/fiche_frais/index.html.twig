@@ -1,28 +1,70 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello FicheFraisController!{% endblock %}
+{% block title %}FicheFrais index{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <h1>Les fiches frais de {{ app.user.nom }} {{ app.user.prenom }}</h1>
+    {{ form_start(form) }}
+        {{ form(form) }}
+    {{ form_end(form) }}
+    <table>
+        <tr>
+            <th>Total des montants validé</th>
+            <th>Nombre de justificatif</th>
+            <th>Etat</th>
+            <th>Date de modification</th>
+            <th>Mois</th>
+        </tr>
+        {% for fiche in uneFicheMois %}
+            <tr>
+                <td>{{ fiche.montantValide }}</td>
+                <td>{{ fiche.nbJustificatif }}</td>
+                <td>{{ fiche.etat.libelle }}</td>
+                <td>{{ fiche.dateModif|date('d-m-Y') }}</td>
+                <td>{{ fiche.mois }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 
-<div class="example-wrapper">
-    <h1>Hello {{ path('app_fiche_frais') }}! ✅</h1>
+    <table>
+        <tr>
+            <th>Forfait etape</th>
+            <th>Frais kilométrique</th>
+            <th>Nuité hotel</th>
+            <th>Repas Restaurant</th>
+        </tr>
+        {% for fiche in uneFicheMois %}
+            <tr>
+                <td>{{ fiche.ligneFraisForfait[0].quantite }}</td>
+                <td>{{ fiche.ligneFraisForfait[1].quantite }}</td>
+                <td>{{ fiche.ligneFraisForfait[2].quantite }}</td>
+                <td>{{ fiche.ligneFraisForfait[3].quantite }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 
-    <div class="example-wrapper">
-        <h1>Les fiches frais de {{ app.user.nom}} {{ app.user.prenom }}</h1>
-
-        <ul>
-            {% for fiche in FicheFrais %}
-                <li>{{ fiche.id }} - {{ fiche.montantValide }}</li>
-            {% endfor %}
-        </ul>
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Libelle</th>
+            <th>Montant</th>
+        </tr>
+        {% for fiche in uneFicheMois %}
+            <tr>
+                <td>{{ fiche.ligneHorsForfait[0].date|date('d-m-Y') }}</td>
+                <td>{{ fiche.ligneHorsForfait[0].libelle }}</td>
+                <td>{{ fiche.ligneHorsForfait[0].montant }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    </body>
+    </html>
+    <div class="col">
+        <a href="{{ path('app_fiche_frais_new') }}">
+            <button class="btn btn-primary">Ajouter</button>
+        </a>
     </div>
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/Users/chailloux.valentin/GSB/GSB-Frais/src/Controller/FicheFraisController.php'|file_link(0) }}">src/Controller/FicheFraisController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/Users/chailloux.valentin/GSB/GSB-Frais/templates/fiche_frais/index.html.twig'|file_link(0) }}">templates/fiche_frais/index.html.twig</a></code></li>
-    </ul>
-</div>
+    </div>
+        </tbody>
+    </table>
 {% endblock %}
